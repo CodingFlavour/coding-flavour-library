@@ -2,9 +2,51 @@
 
 ## ¿Qué es?
 
-Este proyecto es una conjunción de librerias creadas para cualquier proyecto generado para Coding Flavour, con una serie de componentes, paletas y estilos por defecto, además de un Script que se encargará de la generación del proyecto y de la vinculación de todas las herramientas.
+Este proyecto es una conjunción de librerías creadas para cualquier proyecto generado para Coding Flavour, con una serie de componentes, paletas y estilos por defecto, además de un Script que se encargará de la generación del proyecto y de la vinculación de todas las herramientas.
+
 
 ## ¿Cómo se usa?
+
+Tras haber clonado el repositorio, debemos añadirlo como alias de Bash para poder usarlo en cualquier lado.
+
+### Git Bash
+
+Modificamos el fichero de la ruta: ```C:/Program Files/Git/etc/profile.d/aliases```
+
+Añadimos la siguiente línea al final del fichero:
+
+*NOTA: No usar barras invertidas ( \ )*
+
+```bash
+alias generateProject="sh <ruta>/coding-flavour-library/configureProject.sh " $1
+```
+
+De esta manera, podremos lanzarlo desde cualquier ruta.
+
+### Zsh
+
+Para esta terminal, nos situaremos en el root *(Si no estas seguro, ```cd``` debería llevarte)*
+
+Aquí debemos determinar cual es nuestro archivo Source.
+
+Para determinar cual es nuestro archivo:
+
+```bash
+ls -ltrah .zshrc
+ls -ltrah .bashrc
+```
+
+Con estos comandos podremos buscar que fichero existe.
+
+Una vez determinado, habrá que editarlo y añadimos la siguiente línea al final del fichero:
+
+*NOTA: No usar barras invertidas (\\)*
+
+```bash
+alias generateProject="sh <ruta>/coding-flavour-library/configureProject.sh " $1
+```
+
+### Uso
 
 Para usarlo, lanzaremos el comando principal de Script Bash de la siguiente manera y sintaxis:
 
@@ -12,7 +54,7 @@ Para usarlo, lanzaremos el comando principal de Script Bash de la siguiente mane
 sh configureProject.sh <nombre_del_proyecto>
 ```
 
-- _nombre_de_proyecto_: Debe estar en minúsculas.
+ - _nombre_de_proyecto_: Debe estar en minúsculas.
 
 De esta manera, generara dicho proyecto en la ruta donde lances el comando, envuelto en la carpeta principal del proyecto.
 
@@ -28,54 +70,57 @@ A continuación, se detallan estos puntos con lo que nos encontraremos en esta l
 
 ### Grid System
 
-_Nombre de archivo: grid-system.scss_
+*Nombre de archivo: grid-system.scss*
 
-Este archivo de SCSS controla la posicion del contenido en el HTML.
+Este archivo de SCSS controla la posición del contenido en el HTML.
 
 Para poder mantener una estabilidad en cuanto a diseños, este archivo genera varias columnas donde podremos establecer nuestro contenido, y este se generará con puntos de Media por defecto, donde se aplicarán una serie de márgenes para colocar cualquier contenido donde plazca.
 
-De forma regular, trabajamos con un sistema de Grid (consultar diseño), por lo que no se explicará mas aqui.
+De forma regular, trabajamos con un sistema de Grid (consultar diseño), por lo que no se explicará mas aquí.
 
 _Uso_:
 
-Para usarlo, añadimos la clase CSS al elemento que deseamos, siguiendo la sintaxis: _column\_<numero-de-columna>_.
+Para usarlo, añadimos la clase CSS al elemento que deseamos, siguiendo la sintaxis: *
+column_\<numero-de-columna>*
 
 ```ts
 <div class="column_1">
 <span class="column_7">
 <header class="column_12">
 ```
-
-Ejemplo de uso:
+  
+Ejemplo de uso:  
 
 ```ts
 [...]
-  return (
-    <header
-      className={`${headerLayout} ${open ? menuOpen : ""}`}
-      data-testid={"header"}
-    >
-      <div className={`column_1 ${headerWrapper}`}>
+  return (
+    <header
+      className={`${headerLayout} ${open ? menuOpen : ""}`}
+      data-testid={"header"}
+    >
+      <div className={`column_1 ${headerWrapper}`}>
 [...]
+
 ```
 
 _Modificación_
 
-Si en algun caso se necesita modificar, se exponen varias variables que facilitan el control de todo, en sus version mobiles y de escritorio:
+Si en algún caso se necesita modificar, se exponen varias variables que facilitan el control de todo, en sus versión móviles y de escritorio:
 
-- _Margin_: Márgen externo del componente. Se aplica a izquierda y derecha de todo el contenido
+- _Margin_: Margen externo del componente. Se aplica a izquierda y derecha de todo el contenido
 - _WidthColumn_: Tamaño de la columna. Afecta sobre todo al posicionamiento del resto de columnas en el Grid.
-- _MarginColumn_: De la misma manera que el tamaño de la columna, pero afectando a la posicion del contenido.
+- _MarginColumn_: De la misma manera que el tamaño de la columna, pero afectando a la posición del contenido.
 
 ### Configure Project
 
 _Nombre de archivo: configureProject.sh_
 
-Este archivo Bash inicializa el proyecto introducido y conecta las librerias en el árbol de directorios del proyecto.
+Este archivo Bash inicializa el proyecto introducido y conecta las librerías en el árbol de directorios del proyecto.
 
 El nombre del proyecto debe ser con letras minúsculas.
 
 _Uso_
+
 
 ```sh
 sh configureProject.sh <nombre_del_proyecto>
@@ -83,22 +128,24 @@ sh configureProject.sh <nombre_del_proyecto>
 
 Permite el argumento '-h' para obtener ayuda acerca de su funcionamiento.
 
-_Transpilación de mensaje de ayuda_
+_Transpilación de mensaje de ayuda_  
 
 ```sh
 ---------------
-|     HELP    |
+|     HELP    |
 ---------------
-Creates a project with all the utilities needed for a new Coding Flavour project by the given name.
 
+Creates a project with all the utilities needed for a new Coding Flavour project by the given name.
+  
 Usage:
+
 sh ./configureProject.sh [project_name]
 
 [project_name]: Must start with a lowercase letter
 
 Options:
 
-  -h, --help   Show this help message and exit.
+  -h, --help   Show this help message and exit.
 ```
 
 Este Script ejecutará varias acciones:
@@ -111,7 +158,7 @@ Este Script ejecutará varias acciones:
 - --no-tailwind: Sin Tailwind
 - --import-alias '@/\*': Alias por defecto
 - --app: App Router
-
+ 
 2. Instalación de dependencias en el proyecto:
 
 - SASS
@@ -119,8 +166,8 @@ Este Script ejecutará varias acciones:
 3. Movimiento de archivos de librería:
 
 - Creación de carpeta 'src/styles/'
-  - Movimiento de \*grid-system.scss'
+- Movimiento de \*grid-system.scss'
 
 ## Créditos
 
-Creado por Daniel Sanchez Betancor para el equipo Coding Flavour
+Creado por Daniel Sánchez Betancor para el equipo Coding Flavour
