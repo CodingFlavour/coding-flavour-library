@@ -69,6 +69,8 @@ A continuación, se detallan estos puntos con lo que nos encontraremos en esta l
 
 ### Grid System
 
+<h3 style="color: red">@Deprecated</h3>
+
 _Nombre de archivo: grid-system.scss_
 
 Este archivo de SCSS controla la posición del contenido en el HTML.
@@ -110,6 +112,33 @@ Si en algún caso se necesita modificar, se exponen varias variables que facilit
 - _WidthColumn_: Tamaño de la columna. Afecta sobre todo al posicionamiento del resto de columnas en el Grid.
 - _MarginColumn_: De la misma manera que el tamaño de la columna, pero afectando a la posición del contenido.
 
+### Generador de rutas
+
+Permite la creación de todas las rutas de la aplicación. La forma básica del uso de este Script, entrará en modo interactivo. En este modo, se irá preguntando al usuario las diferentes necesidades para poder crear las vistas.
+
+Necesidades:
+
+- Nombre de las rutas: Se usará para generar las diferentes carpetas que tendrán las rutas. El resultado será `<nombre>/page.ts`.
+  Nota: A la hora de introducir los nombres, hacerlo con coma y espacio.
+
+_Correcto_
+
+`> home, contacto, [articleId]`
+
+_Incorrecto_
+
+`> home,contacto,[articleId]`
+
+- Ruta para guardar las nuevas rutas: Lugar donde queramos generar las carpetas relativas a las rutas. Por defecto, se usará la considerada por la arquitectura actual de Coding Flavour.
+
+`> ./ruta/guardado`
+
+- Archivo boilerplate: Archivo del cual queremos propagar todos los nuevos ficheros. Por defecto, se usará como boilerplate una página considerada por la arquitectura actual de Coding Flavour.
+
+`> ~/ruta/fichero/boilerplate.fichero`
+
+Todos estas necesidades pueden proveerse sin necesidad de usar el modo interactivo, a través del uso de varias banderas. Revisar [Configure project - Transpilación de mensajes de ayuda](#configure-project)
+
 ### Configure Project
 
 _Nombre de archivo: configureProject.sh_
@@ -130,20 +159,25 @@ _Transpilación de mensaje de ayuda_
 
 ```sh
 ---------------
-|     HELP    |
+|     HELP    |
 ---------------
-
 Creates a project with all the utilities needed for a new Coding Flavour project by the given name.
 
 Usage:
-
 sh ./configureProject.sh [project_name]
 
 [project_name]: Must start with a lowercase letter
 
-Options:
+Regular usage starts with full interactive mode
 
-  -h, --help   Show this help message and exit.
+Options:
+  -h, --help                                               Show this help message and exit.
+  --views [view1, view2...]                                Injects the names of the views (Stops this interactive section)
+  --viewsPath [./path/to/views]                            Injects path to new views folder (Stops this interactive section)
+  --viewsLocalBoilerplate [./path/to/localBoilerplate]     Uses local boilerplate as base file for new views (Stops this interactive section)
+  --dryMode                                                Run Sript without creating files
+
+
 ```
 
 Este Script ejecutará varias acciones:
@@ -157,14 +191,25 @@ Este Script ejecutará varias acciones:
 - --import-alias '@/\*': Alias por defecto
 - --app: App Router
 
-2. Instalación de dependencias en el s:
+2. Instalación de dependencias
 
 - SASS
 
+3. [Generador de rutas](#generador-de-rutas)
+
+- `--views`: Nombre de las rutas, separados por coma y espacio
+- `--viewsPath`: Ruta para guardar las nuevas rutas
+- `--viewsLocalBoilerplate`: Archivo boilerplate
+
+<h3 style="color: red">@Deprecated</h3>
 3. Movimiento de archivos de librería:
 
 - Creación de carpeta 'src/styles/'
 - Movimiento de \*grid-system.scss'
+
+Ejemplo de lanzamiento con todos los argumentos posibles
+
+`generateProject mi-nuevo-projecto --views home, about, [userId] --viewsPath ./prueba/rutas --viewsLocalBoilerplate ./styles/base/grid-system.scss --dryMode`
 
 ## Créditos
 

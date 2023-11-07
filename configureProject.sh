@@ -13,6 +13,8 @@ SCRIPTPATH=$(dirname "$FULLSCRIPTPATH")
 
 # import helpers
 source $SCRIPTPATH/helpers/log.sh
+source $SCRIPTPATH/helpers/flags.sh
+# import main generators
 source $SCRIPTPATH/generateViews.sh
 
 # Views related
