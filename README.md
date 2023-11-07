@@ -4,18 +4,17 @@
 
 Este proyecto es una conjunción de librerías creadas para cualquier proyecto generado para Coding Flavour, con una serie de componentes, paletas y estilos por defecto, además de un Script que se encargará de la generación del proyecto y de la vinculación de todas las herramientas.
 
-
 ## ¿Cómo se usa?
 
 Tras haber clonado el repositorio, debemos añadirlo como alias de Bash para poder usarlo en cualquier lado.
 
 ### Git Bash
 
-Modificamos el fichero de la ruta: ```C:/Program Files/Git/etc/profile.d/aliases```
+Modificamos el fichero de la ruta: `C:/Program Files/Git/etc/profile.d/aliases`
 
 Añadimos la siguiente línea al final del fichero:
 
-*NOTA: No usar barras invertidas ( \ )*
+_NOTA: No usar barras invertidas ( \ )_
 
 ```bash
 alias generateProject="sh <ruta>/coding-flavour-library/configureProject.sh " $1
@@ -25,7 +24,7 @@ De esta manera, podremos lanzarlo desde cualquier ruta.
 
 ### Zsh
 
-Para esta terminal, nos situaremos en el root *(Si no estas seguro, ```cd``` debería llevarte)*
+Para esta terminal, nos situaremos en el root _(Si no estas seguro, `cd` debería llevarte)_
 
 Aquí debemos determinar cual es nuestro archivo Source.
 
@@ -40,7 +39,7 @@ Con estos comandos podremos buscar que fichero existe.
 
 Una vez determinado, habrá que editarlo y añadimos la siguiente línea al final del fichero:
 
-*NOTA: No usar barras invertidas (\\)*
+_NOTA: No usar barras invertidas (\\)_
 
 ```bash
 alias generateProject="sh <ruta>/coding-flavour-library/configureProject.sh " $1
@@ -54,7 +53,7 @@ Para usarlo, lanzaremos el comando principal de Script Bash de la siguiente mane
 sh configureProject.sh <nombre_del_proyecto>
 ```
 
- - _nombre_de_proyecto_: Debe estar en minúsculas.
+- _nombre_de_proyecto_: Debe estar en minúsculas.
 
 De esta manera, generara dicho proyecto en la ruta donde lances el comando, envuelto en la carpeta principal del proyecto.
 
@@ -70,7 +69,7 @@ A continuación, se detallan estos puntos con lo que nos encontraremos en esta l
 
 ### Grid System
 
-*Nombre de archivo: grid-system.scss*
+_Nombre de archivo: grid-system.scss_
 
 Este archivo de SCSS controla la posición del contenido en el HTML.
 
@@ -80,16 +79,16 @@ De forma regular, trabajamos con un sistema de Grid (consultar diseño), por lo 
 
 _Uso_:
 
-Para usarlo, añadimos la clase CSS al elemento que deseamos, siguiendo la sintaxis: *
-column_\<numero-de-columna>*
+Para usarlo, añadimos la clase CSS al elemento que deseamos, siguiendo la sintaxis: _
+column\_\<numero-de-columna>_
 
 ```ts
 <div class="column_1">
 <span class="column_7">
 <header class="column_12">
 ```
-  
-Ejemplo de uso:  
+
+Ejemplo de uso:
 
 ```ts
 [...]
@@ -121,14 +120,13 @@ El nombre del proyecto debe ser con letras minúsculas.
 
 _Uso_
 
-
 ```sh
 sh configureProject.sh <nombre_del_proyecto>
 ```
 
 Permite el argumento '-h' para obtener ayuda acerca de su funcionamiento.
 
-_Transpilación de mensaje de ayuda_  
+_Transpilación de mensaje de ayuda_
 
 ```sh
 ---------------
@@ -136,7 +134,7 @@ _Transpilación de mensaje de ayuda_
 ---------------
 
 Creates a project with all the utilities needed for a new Coding Flavour project by the given name.
-  
+
 Usage:
 
 sh ./configureProject.sh [project_name]
@@ -158,8 +156,8 @@ Este Script ejecutará varias acciones:
 - --no-tailwind: Sin Tailwind
 - --import-alias '@/\*': Alias por defecto
 - --app: App Router
- 
-2. Instalación de dependencias en el proyecto:
+
+2. Instalación de dependencias en el s:
 
 - SASS
 
