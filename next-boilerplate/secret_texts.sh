@@ -1,0 +1,7 @@
+SECRET_ERROR_UPPERCASE="Que no se te olvide que los componentes empiezan por mayuscula bobo"
+SECRET_CREATING_FOLDER="    - Venga que te creo la carpeta:"
+SECRET_ERROR_CREATE_FOLDER_1="    - Chacho!! Que la carpeta"
+SECRET_ERROR_CREATE_FOLDER_2="ya existe! Pasamos pal siguiente"
+SECRET_CREATING_FOLDERS="Generando el árbol"
+SECRET_CREATING_FILES="Vamos ahora con los ficheritos"
+SECRET_ERROR_CREATE_FILE_1="Parece que ya existe uno igual jeje te lo voy a sobreescribir vale?"
