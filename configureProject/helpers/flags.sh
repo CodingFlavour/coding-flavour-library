@@ -18,6 +18,9 @@ parse_flags() {
         '--dryMode')
             dryMode=true
             ;;
+        '--debug')
+            debug=true
+            ;;
         esac
 
         # Adding all params to corresponding var

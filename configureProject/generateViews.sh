@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# --views page1, page2, [lng] --viewsPath ./tuputisimamadre
+# --views page1, page2, [lng] --viewsPath ./example/src/app/views/[lng]
 
 # Main functions
 get_if_requires_view() {
@@ -68,13 +68,25 @@ get_local_boilerplate() {
 }
 
 replicate_views() {
-    for i in $views; do
-        view=$(print_colored_message "$i" | cut -d ',' -f 1)
-        print_colored_message "- Replicating boilerplate from ${localBoilerplate} to ${path}/${view}/page.ts" blue
-        if [[ $dryMode = false ]]; then
-            mkdir -p ./${path}/${view} && cp $localBoilerplate ./${path}/${view}/page.ts
-        fi
-    done
+    local isDryMode=""
+    local isDebug=""
+
+    if [[ $dryMode = true ]]; then
+        isDryMode='--dryMode'
+    fi
+    if [[ $debug = true ]]; then
+        isDebug='--debug'
+    fi
+
+    # Corregir a alias y comprobar que el usuario pueda usar el alias
+    source "${SCRIPTPATH}/../next-boilerplate/createComponent.sh" --routes $views --routePath $path $isDryMode $isDebug
+    # for i in $views; do
+    #     view=$(print_colored_message "$i" | cut -d ',' -f 1)
+    #     print_colored_message "- Replicating boilerplate from ${localBoilerplate} to ${path}/${view}/page.ts" blue
+    #     if [[ $dryMode = false ]]; then
+    #         mkdir -p ./${path}/${view} && cp $localBoilerplate ./${path}/${view}/page.ts
+    #     fi
+    # done
 }
 
 generate_views() {

@@ -4,15 +4,16 @@ PROJECT_NAME=$1
 # STATICS
 ERROR_UPPERCASE="Error: Project name must start with a lowercase letter."
 DEFAULT_VIEWS_ROUTE=./$PROJECT_NAME/src/app
-PATH_TO_LOCALE_FILE="./styles/main.scss"
+PATH_TO_LOCALE_FILE="./template/tsx/page.tsx"
 
 # DYNAMICS
 dryMode=false
+debug=false
 FULLSCRIPTPATH="${BASH_SOURCE[0]}"
 SCRIPTPATH=$(dirname "$FULLSCRIPTPATH")
 
 # import helpers
-source $SCRIPTPATH/helpers/log.sh
+source $SCRIPTPATH/../common/helpers/log.sh
 source $SCRIPTPATH/helpers/flags.sh
 # import main generators
 source $SCRIPTPATH/generateViews.sh
@@ -22,27 +23,6 @@ interactiveMode=true
 views=''
 path=$DEFAULT_VIEWS_ROUTE
 localBoilerplate=$PATH_TO_LOCALE_FILE
-
-show_help() {
-    print_colored_message "---------------" "green"
-    print_colored_message "|     HELP    |" "green"
-    print_colored_message "---------------" "green"
-    print_colored_message "Creates a project with all the utilities needed for a new Coding Flavour project by the given name."
-    print_colored_message
-    print_colored_message "Usage:" "blue"
-    print_colored_message "sh ./configureProject.sh [project_name]"
-    print_colored_message
-    print_colored_message "[project_name]: Must start with a lowercase letter"
-    print_colored_message
-    print_colored_message "Regular usage starts with full interactive mode"
-    print_colored_message
-    print_colored_message "Options:" "blue"
-    print_colored_message "  -h, --help                                               Show this help message and exit."
-    print_colored_message "  --views [view1, view2...]                                Injects the names of the views (Stops this interactive section)"
-    print_colored_message "  --viewsPath [./path/to/views]                            Injects path to new views folder (Stops this interactive section)"
-    print_colored_message "  --viewsLocalBoilerplate [./path/to/localBoilerplate.file]     Uses local boilerplate as base file for new views (Stops this interactive section)"
-    print_colored_message "  --dryMode                                                Run Sript without creating files"
-}
 
 validate_component_name() {
     local first_char=${PROJECT_NAME:0:1}
@@ -105,6 +85,7 @@ main() {
 }
 
 if [[ $PROJECT_NAME = '' || $PROJECT_NAME = '-h' || $PROJECT_NAME = '--help' ]]; then
+    source $SCRIPTPATH/helpers/help.sh
     show_help
     exit 1
 else
