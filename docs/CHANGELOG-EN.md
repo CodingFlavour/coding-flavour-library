@@ -1,5 +1,19 @@
 # Changelog
 
+## ✨V.1.32
+
+- General
+  - New `coding-flavour-libraries.sh` file to install all Coding Flavour dependencies (@coding-flavour/companion, vscode-settings, icons, styles, common).
+  - Added logic to capitalize first character in generated filenames.
+- *Next Boilerplate*
+  - Fixed filename generation by capitalizing first letter in `generator.sh`.
+- *Configure Project*
+  - Integration of Coding Flavour libraries installation script into the main flow.
+  - Added `--yes` flag to `create-next-app` command to avoid interactive prompts.
+  - Fixed `generateViews.sh`: interactive mode verification in `get_path()` and `get_local_boilerplate()`.
+- *Documentation*
+  - Fixed `configureProject` alias path in README-ES.md and README-EN.md.
+
 ## ✨V.1.31
 
 - General

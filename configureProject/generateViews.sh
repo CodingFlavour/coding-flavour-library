@@ -40,7 +40,7 @@ parse_views() {
 
 # Confirmacion del path en no interactivo quizas?
 get_path() {
-    if [[ $path = $DEFAULT_VIEWS_ROUTE ]]; then
+    if [[ $interactiveMode = true && $path = $DEFAULT_VIEWS_ROUTE ]]; then
         print_colored_message "Where do you want to save the structure? (Enter for Default: ${DEFAULT_VIEWS_ROUTE})" purple
         echo -n "> "
         read path
@@ -54,7 +54,7 @@ get_path() {
 }
 
 get_local_boilerplate() {
-    if [[ $localBoilerplate = $PATH_TO_LOCALE_FILE ]]; then
+    if [[ $interactiveMode = true && $localBoilerplate = $PATH_TO_LOCALE_FILE ]]; then
         print_colored_message "Do you want to use a local file as boilerplate?" purple
         echo -n "> "
         read useLocalFile
@@ -93,6 +93,7 @@ generate_views() {
     local requiresView=''
     get_if_requires_view
 
+    # TODO: Estoy suponiendo que si no es interactivo siempre quiere views?? habria que comprobar si viene algun flag
     if [[ $requiresView = 'y' || $interactiveMode = false ]]; then
         parse_views
         get_path

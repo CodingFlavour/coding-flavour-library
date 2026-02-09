@@ -21,7 +21,7 @@ _NOTA: No usar barras invertidas ( \ )_
 ```bash
 
 alias createComponent="sh <ruta>/coding-flavour-library/next-boilerplate/createComponent.sh " $1 $2
-alias configureProject="sh <ruta>/coding-flavour-library/configureProject.sh " $1
+alias configureProject="sh <ruta>/coding-flavour-library/configureProject/configureProject.sh " $1
 
 ```
 

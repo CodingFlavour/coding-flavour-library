@@ -20,7 +20,7 @@ _NOTE: Do not use backslashes (\)_
 
 ```bash
 alias createComponent="sh <path>/coding-flavour-library/next-boilerplate/createComponent.sh " $1 $2
-alias configureProject="sh <path>/coding-flavour-library/configureProject.sh " $1
+alias configureProject="sh <path>/coding-flavour-library/configureProject/configureProject.sh " $1
 ```
 
 This allows launching any script from any path.

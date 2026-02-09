@@ -17,6 +17,7 @@ source $SCRIPTPATH/../common/helpers/log.sh
 source $SCRIPTPATH/helpers/flags.sh
 # import main generators
 source $SCRIPTPATH/generateViews.sh
+source $SCRIPTPATH/coding-flavour-libraries.sh
 
 # Views related
 interactiveMode=true
@@ -37,7 +38,15 @@ validate_component_name() {
 generate_project() {
     print_colored_message "Starting to create NextJS project" green
     if [[ $dryMode = false ]]; then
-        npx create-next-app $PROJECT_NAME --ts --eslint --src-dir --no-tailwind --import-alias '@/*' --app
+        npx create-next-app \
+        $PROJECT_NAME \
+        --ts \
+        --eslint \
+        --src-dir \
+        --no-tailwind \
+        --import-alias '@/*' \
+        --app \
+        --yes
     fi
     print_colored_message "Ended creating NextJS project" green
 }
@@ -58,29 +67,13 @@ install_dependencies() {
 #     print_colored_message "Ended moving library files" green
 # }
 
-# @deprecated El script ahora se monta de otra manera
-# create_root_dir_front() {
-#     print_colored_message "Creating folders tree in root" green
-#     mkdir ./$PROJECT_NAME/src/presentation/
-#     mkdir ./$PROJECT_NAME/src/presentation/pages
-#     mkdir ./$PROJECT_NAME/src/presentation/layouts
-#     mkdir ./$PROJECT_NAME/src/presentation/components
-#     mkdir ./$PROJECT_NAME/src/presentation/styles
-#     mkdir ./$PROJECT_NAME/src/presentation/styles/utilities
-#     mkdir ./$PROJECT_NAME/src/presentation/styles/base
-#     mkdir ./$PROJECT_NAME/src/presentation/styles/pages
-#     mkdir ./$PROJECT_NAME/src/presentation/styles/layouts
-#     mkdir ./$PROJECT_NAME/src/presentation/styles/components
-#     print_colored_message "Ended creating folders tree in root" green
-# }
-
 main() {
     print_colored_message "Starting to create project" green
     generate_project
     install_dependencies
     generate_views
-    # create_root_dir_front
     # move_styles
+    install_coding_flavour_libraries
     print_colored_message "Ended creating project" green
 }
 

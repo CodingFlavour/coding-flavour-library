@@ -75,6 +75,9 @@ process_file() {
             mkdir -p $path/$file
         fi
 
+        # Capitalize first letter of filename for component name
+        local filename="$(tr '[:lower:]' '[:upper:]' <<<${file:0:1})${file:1}.tsx"
+
         # Generating boilerplate code from file
         codeBoilerplate=$(<$boilerplate)
         code=${codeBoilerplate//REPLACE/$file}
