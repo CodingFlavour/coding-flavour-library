@@ -1,4 +1,6 @@
 parse_flags() {
+    set_prefix "FLAGS"
+
     local caseFlag=''
     for i in $@; do
         # Activating flags
@@ -15,11 +17,13 @@ parse_flags() {
             caseFlag='viewsLocalBoilerplate'
             interactiveMode=false
             ;;
-        '--dryMode')
+        '--dry-mode'|'--dryMode')
+            log "Activating dry mode. No changes will be made to the system."
             dryMode=true
             ;;
         '--debug')
             debug=true
+            set_debug
             ;;
         esac
 

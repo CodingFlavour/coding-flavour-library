@@ -1,49 +1,63 @@
 #!/bin/bash
 
-# import helpers
-source $SCRIPTPATH/../common/helpers/log.sh
-
 # Static variables
-CODING_FLAVOUR_DEPENDENCIES=(
-    "companion",
-    "vscode-settings",
-    "icons",
-    "styles",
+COMMON_CODING_FLAVOUR_DEPENDENCIES=(
+    "companion"
+    "vscode-settings"
+)
+
+FRONT_CODING_FLAVOUR_DEPENDENCIES=(
+    "icons"
+    "styles"
     "common"
 )
 
-SCRIPTS=(
-    '"companion:install": "tsx -r tsconfig-paths/register ./node_modules/@coding-flavour/companion/src/bin/companion.ts install"',
-    'vscode:install": "vscode-settings install"'
+CODING_FLAVOUR_SCRIPTS=(
+    "companion:install WITH_VALUE companion install"
+    "vscode:install WITH_VALUE vscode-settings install"
 )
 
 # Main function to install coding flavour libraries
+install_common_coding_flavour_libraries() {
+    set_prefix "CODING_FLAVOUR_LIBRARIES"
 
-install_coding_flavour_libraries() {
-    print_colored_message "Starting to install Coding Flavour libraries" green
+    log "Starting to install Coding Flavour libraries"
 
-    if [[ $dryMode = false ]]; then
-        install_dependencies
-        add_scripts_to_package_json
-        execute_scripts
+    if [[ $dryMode == false ]]; then
+        install_common_coding_flavour_dependencies
     fi
-    
-    print_colored_message "Ended installing Coding Flavour libraries" green
+
+    add_scripts_to_package_json "${CODING_FLAVOUR_SCRIPTS[@]}"
+    execute_scripts
+
+    log "Ended installing Coding Flavour libraries"
+    erase_prefix
 }
 
-install_dependencies() {
-    for library in "${CODING_FLAVOUR_DEPENDENCIES[@]}"; do
+install_front_coding_flavour_libraries() {
+    set_prefix "CODING_FLAVOUR_LIBRARIES"
+
+    log "Starting to install Front Coding Flavour libraries"
+
+    if [[ $dryMode == false ]]; then
+        for library in "${FRONT_CODING_FLAVOUR_DEPENDENCIES[@]}"; do
+            npm install --prefix ./$PROJECT_NAME/ @coding-flavour/$library
+        done
+    fi
+
+    log "Ended installing Front Coding Flavour libraries"
+    erase_prefix
+}
+
+install_common_coding_flavour_dependencies() {
+    for library in "${COMMON_CODING_FLAVOUR_DEPENDENCIES[@]}"; do
         npm install --prefix ./$PROJECT_NAME/ @coding-flavour/$library
     done
 }
 
-add_scripts_to_package_json() {
-    for script in "${SCRIPTS[@]}"; do
-        npx --prefix ./$PROJECT_NAME/ json -I -f ./$PROJECT_NAME/package.json -e "this.scripts[${script%%:*}] = ${script#*:}"
-    done
-}
-
 execute_scripts() {
-    npm run --prefix ./$PROJECT_NAME/ companion:install
-    npm run --prefix ./$PROJECT_NAME/ vscode:install
+    if [[ $dryMode == false ]]; then
+        npm run --prefix ./$PROJECT_NAME/ companion:install
+        npm run --prefix ./$PROJECT_NAME/ vscode:install
+    fi
 }

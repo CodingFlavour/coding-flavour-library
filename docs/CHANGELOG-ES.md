@@ -1,5 +1,14 @@
 # Registro de cambios
 
+## 🚀 V.1.33
+
+- General
+  - Añadidas funciones helper al sistema de log: `erase_prefix()`, `log_debug()`, `log_on_dry()`, `set_debug()`.
+- *Configure Project - Backend*
+  - Implementada función `modify_env_vars()` para crear archivos de entorno (.env, .env.example, .env.development).
+  - Agregadas variables de entorno BACK_END_PORT (4000) y FRONT_END_PORT (3000) con valores por defecto.
+  - Dejados comentarios TODO para futuras mejoras: flags de puerto, modo interactivo y sistema .route-table.
+
 ## ✨ V.1.32
 
 - General

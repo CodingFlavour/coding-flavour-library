@@ -71,10 +71,10 @@ replicate_views() {
     local isDryMode=""
     local isDebug=""
 
-    if [[ $dryMode = true ]]; then
-        isDryMode='--dryMode'
+    if [[ $dryMode == true ]]; then
+        isDryMode='--dry-mode'
     fi
-    if [[ $debug = true ]]; then
+    if [[ $debug == true ]]; then
         isDebug='--debug'
     fi
 

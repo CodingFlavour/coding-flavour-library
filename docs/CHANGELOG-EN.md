@@ -1,5 +1,14 @@
 # Changelog
 
+## 🚀 V.1.33
+
+- General
+  - Added helper functions to log system: `erase_prefix()`, `log_debug()`, `log_on_dry()`, `set_debug()`.
+- *Configure Project - Backend*
+  - Implemented `modify_env_vars()` function to create environment files (.env, .env.example, .env.development).
+  - Added environment variables BACK_END_PORT (4000) and FRONT_END_PORT (3000) with default values.
+  - Added TODO comments for future enhancements: port flags, interactive mode, and .route-table system.
+
 ## ✨V.1.32
 
 - General

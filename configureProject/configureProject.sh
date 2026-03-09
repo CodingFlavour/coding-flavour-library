@@ -11,12 +11,18 @@ dryMode=false
 debug=false
 FULLSCRIPTPATH="${BASH_SOURCE[0]}"
 SCRIPTPATH=$(dirname "$FULLSCRIPTPATH")
+LOGSPATH="$PWD/logs"
 
+# import core scripts
+source $SCRIPTPATH/../dev-ups-scripts/utils/log/log.sh
+source $SCRIPTPATH/../dev-ups-scripts/config/modify-env-vars.sh
 # import helpers
-source $SCRIPTPATH/../common/helpers/log.sh
 source $SCRIPTPATH/helpers/flags.sh
+source $SCRIPTPATH/../common/helpers/npm-package.sh
+source $SCRIPTPATH/../dev-ups-scripts/utils/log/log.sh
 # import main generators
-source $SCRIPTPATH/generateViews.sh
+source $SCRIPTPATH/front/create-front-project.sh
+source $SCRIPTPATH/back/create-back-project.sh
 source $SCRIPTPATH/coding-flavour-libraries.sh
 
 # Views related
@@ -34,56 +40,52 @@ validate_component_name() {
     fi
 }
 
-# Generates main project in NextJS
-generate_project() {
-    print_colored_message "Starting to create NextJS project" green
-    if [[ $dryMode = false ]]; then
-        npx create-next-app \
-        $PROJECT_NAME \
-        --ts \
-        --eslint \
-        --src-dir \
-        --no-tailwind \
-        --import-alias '@/*' \
-        --app \
-        --yes
+get_arch() {
+    if [[ $interactiveMode = true ]]; then
+        read -p "* Do you want to create a front project? (y/n) " -n 1 -r
+        echo
+
+        if [[ $REPLY =~ ^[Nn]$ ]]; then
+            read -p "* Do you want to create a back project? (y/n) " -n 1 -r
+            echo
+
+            if [[ $REPLY =~ ^[Nn]$ ]]; then
+                log "No architecture selected. Exiting."
+                exit 1
+            else 
+                create_back_project
+            fi
+        else 
+            create_front_project
+        fi
     fi
-    print_colored_message "Ended creating NextJS project" green
 }
 
-install_dependencies() {
-    print_colored_message "Starting to install dependencies" green
-    if [[ $dryMode = false ]]; then
-        npm install --prefix ./$PROJECT_NAME/ sass
+create_logs_dir_if_not_exists() {
+    if [[ ! -d "$LOGSPATH" ]]; then
+        if ! mkdir -p "$LOGSPATH" 2> /dev/null; then
+            log "Failed to create logs directory at $LOGSPATH. Check permissions and available space."
+            exit 1
+        fi
     fi
-    print_colored_message "Ended installing dependencies" green
 }
-
-# @deprecated Hay que comprobara si se puede reutilizar
-# move_styles() {
-#     print_colored_message "Starting to move library files" green
-#     cp $SCRIPTPATH/styles/main.scss ./$PROJECT_NAME/src/presentation/styles/main.scss
-#     cp $SCRIPTPATH/styles/base/grid-system.scss ./$PROJECT_NAME/src/presentation/styles/base/grid-system.scss
-#     print_colored_message "Ended moving library files" green
-# }
 
 main() {
-    print_colored_message "Starting to create project" green
-    generate_project
-    install_dependencies
-    generate_views
-    # move_styles
-    install_coding_flavour_libraries
-    print_colored_message "Ended creating project" green
+    set_prefix "MAIN"
+    log "Starting to create project"
+    create_logs_dir_if_not_exists
+    get_arch
+    install_common_coding_flavour_libraries
+    log "Ended creating project"
 }
 
 if [[ $PROJECT_NAME = '' || $PROJECT_NAME = '-h' || $PROJECT_NAME = '--help' ]]; then
     source $SCRIPTPATH/helpers/help.sh
     show_help
-    exit 1
-else
-    validate_component_name
-    parse_flags $@
-    main
     exit 0
 fi
+
+validate_component_name
+parse_flags $@
+main
+exit 0
