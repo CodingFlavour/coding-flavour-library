@@ -4,7 +4,7 @@
 
 # Main functions
 get_if_requires_view() {
-    if [[ $interactiveMode = true ]]; then
+    if [[ $_INTERACTIVE_MODE = true ]]; then
         print_colored_message "Does this project requires views?" purple
         echo -n "> "
         read requiresView
@@ -13,7 +13,7 @@ get_if_requires_view() {
 
 parse_views() {
     # Comprobar en no interactivo que haya metido algo
-    if [[ $interactiveMode = true ]]; then
+    if [[ $_INTERACTIVE_MODE = true ]]; then
         correct=false
 
         while [ $correct = false ]; do
@@ -40,7 +40,7 @@ parse_views() {
 
 # Confirmacion del path en no interactivo quizas?
 get_path() {
-    if [[ $interactiveMode = true && $path = $DEFAULT_VIEWS_ROUTE ]]; then
+    if [[ $_INTERACTIVE_MODE = true && $path = $DEFAULT_VIEWS_ROUTE ]]; then
         print_colored_message "Where do you want to save the structure? (Enter for Default: ${DEFAULT_VIEWS_ROUTE})" purple
         echo -n "> "
         read path
@@ -54,7 +54,7 @@ get_path() {
 }
 
 get_local_boilerplate() {
-    if [[ $interactiveMode = true && $localBoilerplate = $PATH_TO_LOCALE_FILE ]]; then
+    if [[ $_INTERACTIVE_MODE = true && $localBoilerplate = $PATH_TO_LOCALE_FILE ]]; then
         print_colored_message "Do you want to use a local file as boilerplate?" purple
         echo -n "> "
         read useLocalFile
@@ -68,22 +68,22 @@ get_local_boilerplate() {
 }
 
 replicate_views() {
-    local isDryMode=""
-    local isDebug=""
+    local is_dry_mode=""
+    local is_debug=""
 
-    if [[ $dryMode == true ]]; then
-        isDryMode='--dry-mode'
+    if [[ $_DRY_MODE == true ]]; then
+        is_dry_mode='--dry-mode'
     fi
-    if [[ $debug == true ]]; then
-        isDebug='--debug'
+    if [[ $_DEBUG == true ]]; then
+        is_debug='--debug'
     fi
 
     # Corregir a alias y comprobar que el usuario pueda usar el alias
-    source "${SCRIPTPATH}/../next-boilerplate/createComponent.sh" --routes $views --routePath $path $isDryMode $isDebug
+    source "${SCRIPTPATH}/../next-boilerplate/createComponent.sh" --routes $views --routePath $path $is_dry_mode $is_debug
     # for i in $views; do
     #     view=$(print_colored_message "$i" | cut -d ',' -f 1)
     #     print_colored_message "- Replicating boilerplate from ${localBoilerplate} to ${path}/${view}/page.ts" blue
-    #     if [[ $dryMode = false ]]; then
+    #     if [[ $_DRY_MODE = false ]]; then
     #         mkdir -p ./${path}/${view} && cp $localBoilerplate ./${path}/${view}/page.ts
     #     fi
     # done
@@ -94,7 +94,7 @@ generate_views() {
     get_if_requires_view
 
     # TODO: Estoy suponiendo que si no es interactivo siempre quiere views?? habria que comprobar si viene algun flag
-    if [[ $requiresView = 'y' || $interactiveMode = false ]]; then
+    if [[ $requiresView = 'y' || $_INTERACTIVE_MODE = false ]]; then
         parse_views
         get_path
         get_local_boilerplate

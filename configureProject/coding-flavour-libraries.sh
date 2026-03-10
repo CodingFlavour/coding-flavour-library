@@ -23,7 +23,7 @@ install_common_coding_flavour_libraries() {
 
     log "Starting to install Coding Flavour libraries"
 
-    if [[ $dryMode == false ]]; then
+    if [[ $_DRY_MODE == false ]]; then
         install_common_coding_flavour_dependencies
     fi
 
@@ -31,7 +31,6 @@ install_common_coding_flavour_libraries() {
     execute_scripts
 
     log "Ended installing Coding Flavour libraries"
-    erase_prefix
 }
 
 install_front_coding_flavour_libraries() {
@@ -39,25 +38,24 @@ install_front_coding_flavour_libraries() {
 
     log "Starting to install Front Coding Flavour libraries"
 
-    if [[ $dryMode == false ]]; then
+    if [[ $_DRY_MODE == false ]]; then
         for library in "${FRONT_CODING_FLAVOUR_DEPENDENCIES[@]}"; do
-            npm install --prefix ./$PROJECT_NAME/ @coding-flavour/$library
+            npm install @coding-flavour/$library
         done
     fi
 
     log "Ended installing Front Coding Flavour libraries"
-    erase_prefix
 }
 
 install_common_coding_flavour_dependencies() {
     for library in "${COMMON_CODING_FLAVOUR_DEPENDENCIES[@]}"; do
-        npm install --prefix ./$PROJECT_NAME/ @coding-flavour/$library
+        npm install @coding-flavour/$library
     done
 }
 
 execute_scripts() {
-    if [[ $dryMode == false ]]; then
-        npm run --prefix ./$PROJECT_NAME/ companion:install
-        npm run --prefix ./$PROJECT_NAME/ vscode:install
+    if [[ $_DRY_MODE == false ]]; then
+        npm run companion:install
+        npm run vscode:install
     fi
 }

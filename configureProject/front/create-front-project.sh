@@ -12,7 +12,7 @@ create_front_project() {
 # Generates main project in NextJS
 generate_project() {
     print_colored_message "Starting to create NextJS project" green
-    if [[ $dryMode == false ]]; then
+    if [[ $_DRY_MODE == false ]]; then
         npx create-next-app \
         $PROJECT_NAME \
         --ts \
@@ -28,7 +28,7 @@ generate_project() {
 
 install_dependencies() {
     print_colored_message "Starting to install dependencies" green
-    if [[ $dryMode == false ]]; then
+    if [[ $_DRY_MODE == false ]]; then
         npm install --prefix ./$PROJECT_NAME/ sass
     fi
     print_colored_message "Ended installing dependencies" green

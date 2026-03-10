@@ -48,7 +48,7 @@ _NOTE: Do not use backslashes (\)_
 ```bash
 
 alias createComponent="sh <path>/coding-flavour-library/next-boilerplate/createComponent.sh " $1 $2
-alias generateProject="sh <path>/coding-flavour-library/configureProject.sh " $1
+alias configureProject="sh <path>/coding-flavour-library/configureProject/configureProject.sh " $1
 
 ```
 
@@ -66,7 +66,7 @@ To use this script, execute the primary command of the Bash Script as follows:
 
 ```bash
 
-sh generateProject.sh <project_name>
+sh configureProject.sh <project_name>
 
 ```
 
@@ -80,37 +80,53 @@ This command allows using various flags to expedite the process and skip the int
 
 - `-h, --help`: Displays a help message.
 - `--views [view1, view2...]`: Creates files of type `route` with each of the provided names.
-- `--viewsPath [./path/to/routes]`: Stores the files in the provided path.
-- `--viewsLocalBoilerplate [./path/to/localBoilerplate.file]`: Uses a customized file as _boilerplate_ for others.
-- `--dryMode`: Starts the script in read-only mode without saving any changes.
+- `--viewsPath [./path/to/routes]` / `--views-path`: Stores the files in the provided path.
+- `--viewsLocalBoilerplate [./path/to/localBoilerplate.file]` / `--views-local-boilerplate`: Uses a customized file as _boilerplate_ for others.
+- `--dry-mode` / `--dryMode`: Starts the script in read-only mode without saving any changes.
+- `--front-end-port [port]` / `--frontEndPort`: Sets `FRONT_END_PORT` in the backend project's `.env`.
+- `--back-end-port [port]` / `--backEndPort`: Sets `BACK_END_PORT` in the backend project's `.env`.
 - `--debug`: Displays more log messages.
 
 _Example of launch with all possible arguments_
 
 ```bash
 
-generateProject my-new-project --views home, about, [userId] --viewsPath ./test/routes --viewsLocalBoilerplate ./styles/base/grid-system.scss --dryMode --debug
+configureProject my-new-project --views home, about, [userId] --viewsPath ./test/routes --viewsLocalBoilerplate ./styles/base/grid-system.scss --dry-mode --debug
 
 ```
 
 #### Script Details
 
-This script executes several actions:
+The Script starts by asking what type of architecture to create.
+
+**Frontend project (NextJS)**
 
 1. Project installation with NPX of NextJS, using the following parameters:
 
-   - --ts: Typescript
+   - --ts: Typescript (Deprecated)
    - --eslint: ESLint
    - --src-dir: src/ directory
    - --no-tailwind: Without Tailwind
-   - --import-alias '@/\*': Default alias
+   - --import-alias '@/*': Default alias
    - --app: App Router
 
 2. Installation of dependencies
 
    - SASS
 
-3. [Route Generator](https://chat.openai.com/c/bd5547ce-5f92-4295-b5f8-00d70232555c#route-generator)
+3. [Route Generator](#route-generator)
+
+**Backend project (Express)**
+
+1. Initialization with `npm init`.
+2. Installation of Express.
+3. Creation of `.env` and `.env.example` with `BACK_END_PORT` and `FRONT_END_PORT`.
+   - Port resolution priority: flags > interactive mode > automatic assignment.
+   - If the project name ends with `_BACKEND`, the corresponding frontend port is looked up in `.route-table`.
+
+In both cases, the common Coding Flavour libraries are installed at the end.
+
+> **Note:** For `.route-table` lookup to work, configure `ROUTE_TABLE_PATH` in your `.bashrc`. See `.bashrc.example` at the root of this repository.
 
 ### Next Boilerplate
 
@@ -158,19 +174,19 @@ Below, we detail what you will find in this library.
 
 <h3 style="color: red">@Deprecated</h3>
 
-_Nombre de archivo: grid-system.scss_
+_File name: grid-system.scss_
 
-Este archivo de SCSS controla la posición del contenido en el HTML.
+This SCSS file controls the position of content in the HTML.
 
-Para poder mantener una estabilidad en cuanto a diseños, este archivo genera varias columnas donde podremos establecer nuestro contenido, y este se generará con puntos de Media por defecto, donde se aplicarán una serie de márgenes para colocar cualquier contenido donde plazca.
+To maintain design consistency, this file generates several columns where content can be placed. It comes with default media breakpoints applying margins to position content as desired.
 
-De forma regular, trabajamos con un sistema de Grid (consultar diseño), por lo que no se explicará mas aquí.
+We typically work with a Grid system (consult the design team), so no further explanation is provided here.
 
-_Uso_:
+_Usage_:
 
-Para usarlo, añadimos la clase CSS al elemento que deseamos, siguiendo la sintaxis: \_
+Add the CSS class to the desired element using the following syntax:
 
-column\_\<numero-de-columna>\_
+column\_\<column-number>\_
 
 ```ts
 
@@ -182,7 +198,7 @@ column\_\<numero-de-columna>\_
 
 ```
 
-Ejemplo de uso:
+Example:
 
 ```ts
 
@@ -206,15 +222,15 @@ Ejemplo de uso:
 
 ```
 
-_Modificación_
+_Modification_
 
-Si en algún caso se necesita modificar, se exponen varias variables que facilitan el control de todo, en sus versión móviles y de escritorio:
+If modification is needed, several variables are exposed to control everything in both mobile and desktop versions:
 
-- _Margin_: Margen externo del componente. Se aplica a izquierda y derecha de todo el contenido
+- _Margin_: Outer margin of the component. Applied to the left and right of all content.
 
-- _WidthColumn_: Tamaño de la columna. Afecta sobre todo al posicionamiento del resto de columnas en el Grid.
+- _WidthColumn_: Column width. Mainly affects the positioning of other columns in the Grid.
 
-- _MarginColumn_: De la misma manera que el tamaño de la columna, pero afectando a la posición del contenido.
+- _MarginColumn_: Same as column width, but affecting content position.
 
 ### Route Generator
 

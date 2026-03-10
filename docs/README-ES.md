@@ -52,7 +52,7 @@ _NOTA: No usar barras invertidas (\\)_
 ```bash
 
 alias createComponent="sh <ruta>/coding-flavour-library/next-boilerplate/createComponent.sh " $1 $2
-alias generateProject="sh <ruta>/coding-flavour-library/configureProject.sh " $1
+alias configureProject="sh <ruta>/coding-flavour-library/configureProject/configureProject.sh " $1
 
 ```
 
@@ -70,7 +70,7 @@ Para usar este Script, lanzaremos el comando principal de Script Bash de la sigu
 
 ```sh
 
-sh generateProject.sh <nombre_del_proyecto>
+sh configureProject.sh <nombre_del_proyecto>
 
 ```
 
@@ -82,28 +82,32 @@ Cuando se inicie el comando, te irá guiando para configurar las diferentes secc
 
 Este comando permite el uso de varias banderas para agilizar el proceso y saltar el modo interactivo de cada bandera que proveamos.
 
-- `-h, --help`: Muestra un mensaje de ayuda .
+- `-h, --help`: Muestra un mensaje de ayuda.
 - `--views [view1, view2...]`: Crea ficheros de tipo `route` con cada uno de los nombres que se proveen.
-- `--viewsPath [./path/to/routes]`: Guarda los ficheros en la ruta proveída
-- `--viewsLocalBoilerplate [./path/to/localBoilerplate.file]`: Utiliza un fichero personalizado como _boilerplate_ de los demás
-- `--dryMode`: Inicia el Script en modo lectura, sin guardar ningún cambio.
-- `--debug`: Muestra mas mensajes en el log.
+- `--viewsPath [./ruta/hacia/vistas]` / `--views-path`: Guarda los ficheros en la ruta proveída.
+- `--viewsLocalBoilerplate [./ruta/hacia/boilerplate.fichero]` / `--views-local-boilerplate`: Utiliza un fichero personalizado como _boilerplate_ de los demás.
+- `--dry-mode` / `--dryMode`: Inicia el Script en modo lectura, sin guardar ningún cambio.
+- `--front-end-port [puerto]` / `--frontEndPort`: Fija el valor de `FRONT_END_PORT` en el `.env` del proyecto backend.
+- `--back-end-port [puerto]` / `--backEndPort`: Fija el valor de `BACK_END_PORT` en el `.env` del proyecto backend.
+- `--debug`: Muestra más mensajes en el log.
 
 _Ejemplo de lanzamiento con todos los argumentos posibles_
 
 ```bash
 
-generateProject mi-nuevo-projecto --views home, about, [userId] --viewsPath ./prueba/rutas --viewsLocalBoilerplate ./styles/base/grid-system.scss --dryMode --debug
+configureProject mi-nuevo-projecto --views home, about, [userId] --viewsPath ./prueba/rutas --viewsLocalBoilerplate ./styles/base/grid-system.scss --dry-mode --debug
 
 ```
 
 #### Detalles del Script
 
-Este Script ejecutará varias acciones:
+El Script comenzará preguntando el tipo de arquitectura a crear.
+
+**Proyecto Frontend (NextJS)**
 
 1. Instalación de proyecto con NPX de NextJS, con los siguientes parámetros:
 
-   - --ts: Typescript
+   - --ts: Typescript (Deprecado)
 
    - --eslint: ESLint
 
@@ -111,7 +115,7 @@ Este Script ejecutará varias acciones:
 
    - --no-tailwind: Sin Tailwind
 
-   - --import-alias '@/\*': Alias por defecto
+   - --import-alias '@/*': Alias por defecto
 
    - --app: App Router
 
@@ -120,6 +124,18 @@ Este Script ejecutará varias acciones:
    - SASS
 
 3. [Generador de rutas](#generador-de-rutas)
+
+**Proyecto Backend (Express)**
+
+1. Inicialización con `npm init`.
+2. Instalación de Express.
+3. Creación de `.env` y `.env.example` con `BACK_END_PORT` y `FRONT_END_PORT`.
+   - Orden de prioridad: flags > modo interactivo > asignación automática.
+   - Si el proyecto termina en `_BACKEND`, se busca el puerto del frontend correspondiente en el `.route-table`.
+
+En ambos casos se instalan al finalizar las librerías comunes de Coding Flavour.
+
+> **Nota:** Para que la búsqueda en `.route-table` funcione, configura `ROUTE_TABLE_PATH` en tu `.bashrc`. Consulta `.bashrc.example` en la raíz del repositorio.
 
 ### Next Boilerplate
 
