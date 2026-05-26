@@ -2,15 +2,15 @@
 PROJECT_NAME=$1
 # Esto tendria que ir a un config o algo
 # STATICS
-ERROR_UPPERCASE="Error: Project name must start with a lowercase letter."
 DEFAULT_VIEWS_ROUTE=./$PROJECT_NAME/src/app
 PATH_TO_LOCALE_FILE="./template/tsx/page.tsx"
 
 # DYNAMICS
 _DRY_MODE=false
 _DEBUG=false
+PROJECT_TYPE=""
 FULLSCRIPTPATH="${BASH_SOURCE[0]}"
-SCRIPTPATH=$(dirname "$FULLSCRIPTPATH")
+SCRIPTPATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LOGSPATH="$PWD/logs"
 
 # load .bashrc if exists, to get user custom env vars
@@ -20,12 +20,12 @@ fi
 
 # import core scripts
 source $SCRIPTPATH/../dev-ups-scripts/utils/log/log.sh
-# source $SCRIPTPATH/../dev-ups-scripts/utils/route-table/route-table.sh
 source $SCRIPTPATH/../dev-ups-scripts/config/modify-env-vars.sh
 # import helpers
 source $SCRIPTPATH/helpers/flags.sh
 source $SCRIPTPATH/../common/helpers/npm-package.sh
 source $SCRIPTPATH/../dev-ups-scripts/utils/log/log.sh
+source $SCRIPTPATH/../i18n/i18n.sh
 # import main generators
 source $SCRIPTPATH/front/create-front-project.sh
 source $SCRIPTPATH/back/create-back-project.sh
@@ -55,7 +55,7 @@ validate_component_name() {
     local first_char=${PROJECT_NAME:0:1}
 
     if [[ ! "$first_char" =~ [[:lower:]] ]]; then
-        print_colored_message "$ERROR_UPPERCASE" "red"
+        log_error "$ERROR_PROJECT_NOT_UPPERCASE"
         exit 1
     fi
 }
@@ -70,12 +70,14 @@ get_arch() {
             echo
 
             if [[ $REPLY =~ ^[Nn]$ ]]; then
-                log "No architecture selected. Exiting."
+                log_error "No architecture selected. Exiting."
                 exit 1
             else
+                PROJECT_TYPE="back"
                 create_back_project
             fi
         else
+            PROJECT_TYPE="front"
             create_front_project
         fi
     fi
@@ -84,20 +86,23 @@ get_arch() {
 create_logs_dir_if_not_exists() {
     if [[ ! -d "$LOGSPATH" ]]; then
         if ! mkdir -p "$LOGSPATH" 2>/dev/null; then
-            log "Failed to create logs directory at $LOGSPATH. Check permissions and available space."
+            log_error "Failed to create logs directory at $LOGSPATH. Check permissions and available space."
             exit 1
         fi
     fi
 }
 
 main() {
-    set_prefix "MAIN"
+    push_prefix "MAIN"
     log "Starting to create project"
+    
     _set_config
     create_logs_dir_if_not_exists
     get_arch
     install_common_coding_flavour_libraries
+    
     log "Ended creating project"
+    pop_prefix
 }
 
 if [[ $PROJECT_NAME = '' || $PROJECT_NAME = '-h' || $PROJECT_NAME = '--help' ]]; then

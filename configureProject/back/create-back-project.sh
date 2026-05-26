@@ -1,14 +1,12 @@
-# Until I can have my own HomeLab, we cannot afford to have TS in the backend. Once I get it, this functionality will be enabled again.
-_CREATE_BACK_DEPRECATED_TS=1
-
 create_back_project() {
-    set_prefix "BACK"
+    push_prefix "BACK"
 
     log "Starting to create Back project"
 
     create_structure
 
     log "Ended creating Back project"
+    pop_prefix
 }
 
 create_structure() {
@@ -36,34 +34,28 @@ create_structure() {
         log "Expected file: ./$PROJECT_NAME/package.json"
     fi
 
-    if [[ $_CREATE_BACK_DEPRECATED_TS -eq 1 ]]; then
-        log "Skipping TypeScript installation and initialization for Back project. This functionality is currently deprecated until HomeLab is available."
-        log "Once HomeLab is available, this will be re-enabled and the project will be created with TypeScript support by default."
-    else
-        log "Installing typescript and initializing tsconfig"
+    log "Installing typescript and initializing tsconfig"
 
-        if [[ $_DRY_MODE == false ]]; then
-            npm i typescript >"$LOGSPATH/npm_typescript_install.log"
+    if [[ $_DRY_MODE == false ]]; then
+        npm i typescript tsx >"$LOGSPATH/npm_typescript_install.log"
 
-            if [[ $? -ne 0 ]]; then
-                log "Failed to install TypeScript. Check $LOGSPATH/npm_typescript_install.log for more details"
-                exit 1
-            fi
-
-            npx tsc --init >"$LOGSPATH/tsc_init.log"
-
-            if [[ $? -ne 0 ]]; then
-                log "Failed to initialize TypeScript. Check $LOGSPATH/tsc_init.log for more details"
-                exit 1
-            fi
-        else
-            log "Dry mode is active. Typescript not installed and tsconfig not initialized"
-            log "Expected files: ./$PROJECT_NAME/node_modules/typescript, ./$PROJECT_NAME/tsconfig.json"
+        if [[ $? -ne 0 ]]; then
+            log "Failed to install TypeScript. Check $LOGSPATH/npm_typescript_install.log for more details"
+            exit 1
         fi
 
-        log "Installing express"
+        npx tsc --init >"$LOGSPATH/tsc_init.log"
 
+        if [[ $? -ne 0 ]]; then
+            log "Failed to initialize TypeScript. Check $LOGSPATH/tsc_init.log for more details"
+            exit 1
+        fi
+    else
+        log "Dry mode is active. Typescript not installed and tsconfig not initialized"
+        log "Expected files: ./$PROJECT_NAME/node_modules/typescript, ./$PROJECT_NAME/tsconfig.json"
     fi
+
+    log "Installing express"
 
     if [[ $_DRY_MODE == false ]]; then
         npm i express >"$LOGSPATH/npm_express_install.log"
@@ -77,8 +69,20 @@ create_structure() {
         log "Expected files: ./$PROJECT_NAME/node_modules/express"
     fi
 
+    if [[ $_DRY_MODE == false ]]; then
+        npm install tsx -D >"$LOGSPATH/npm_tsx_install.log"
+
+        if [[ $? -ne 0 ]]; then
+            log "Failed to install tsx as dev dependency. Check $LOGSPATH/npm_tsx_install.log for more details"
+            exit 1
+        fi
+    else
+        log "Dry mode is active. TSX not installed as dev dependency"
+        log "Expected files: ./$PROJECT_NAME/node_modules/tsx"
+    fi
+
     local scripts=(
-        "dev WITH_VALUE node --env-file=.env index.js"
+        "dev WITH_VALUE npx tsx --env-file=.env index.ts"
     )
 
     add_scripts_to_package_json "${scripts[@]}"
@@ -86,10 +90,10 @@ create_structure() {
     log "Cleaning placeholder scripts"
     remove_scripts_from_package_json "test" "start"
 
-    modify_env_vars
+    setup_project_env
 }
 
-modify_env_vars() {
+setup_project_env() {
     log "Creating environment files"
 
     local front_end_port=0
@@ -97,8 +101,8 @@ modify_env_vars() {
     local path="$CF_PROJECTS_PATH/$PROJECT_NAME"
 
     if [[ $_DRY_MODE == false ]]; then
-        _modify_env_vars "$PROJECT_NAME" "FRONT_END_PORT" "0"
-        _modify_env_vars "$PROJECT_NAME" "BACK_END_PORT" "0"
+        modify_env_vars "$PROJECT_NAME" "FRONT_END_PORT" "0"
+        modify_env_vars "$PROJECT_NAME" "BACK_END_PORT" "0"
 
         if ! mv "$path/.env" "$path/.env.example"; then
             log "Failed to rename .env to .env.example for project $PROJECT_NAME. Check if the file exists and if you have the necessary permissions."
@@ -165,10 +169,9 @@ modify_env_vars() {
         log "Assigned Backend port: $back_end_port"
     fi
 
-    # @TODO: esto va a cambiar en la siguiente alpha para quitarle el '_' porque no es privada la funcion en devups, cuidadito
     if [[ $_DRY_MODE == false ]]; then
-        _modify_env_vars "$PROJECT_NAME" "FRONT_END_PORT" "$front_end_port"
-        _modify_env_vars "$PROJECT_NAME" "BACK_END_PORT" "$back_end_port"
+        modify_env_vars "$PROJECT_NAME" "FRONT_END_PORT" "$front_end_port"
+        modify_env_vars "$PROJECT_NAME" "BACK_END_PORT" "$back_end_port"
     else
         log "Dry mode is active. Environment variables not modified"
         log "Expected modifications to .env files:"

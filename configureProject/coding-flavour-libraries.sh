@@ -13,13 +13,13 @@ FRONT_CODING_FLAVOUR_DEPENDENCIES=(
 )
 
 CODING_FLAVOUR_SCRIPTS=(
-    "companion:install WITH_VALUE companion install"
+    "companion:install WITH_VALUE npx tsx -r tsconfig-paths/register ./node_modules/@coding-flavour/companion/src/bin/companion.ts install WITH_PROJECT_TYPE PROJECT_TYPE"
     "vscode:install WITH_VALUE vscode-settings install"
 )
 
 # Main function to install coding flavour libraries
 install_common_coding_flavour_libraries() {
-    set_prefix "CODING_FLAVOUR_LIBRARIES"
+    push_prefix "CODING_FLAVOUR_LIBRARIES"
 
     log "Starting to install Coding Flavour libraries"
 
@@ -31,10 +31,11 @@ install_common_coding_flavour_libraries() {
     execute_scripts
 
     log "Ended installing Coding Flavour libraries"
+    pop_prefix
 }
 
 install_front_coding_flavour_libraries() {
-    set_prefix "CODING_FLAVOUR_LIBRARIES"
+    push_prefix "CODING_FLAVOUR_LIBRARIES"
 
     log "Starting to install Front Coding Flavour libraries"
 
@@ -45,6 +46,7 @@ install_front_coding_flavour_libraries() {
     fi
 
     log "Ended installing Front Coding Flavour libraries"
+    pop_prefix
 }
 
 install_common_coding_flavour_dependencies() {
