@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "companion:install": "tsx -r tsconfig-paths/register ./node_modules/@coding-flavour/companion/src/bin/companion.ts install",
+    "dev-ups:install": "install ./dev-ups-scripts"
+  },
+  "dependencies": {
+    "@coding-flavour/companion": "1.3.0",
+    "@coding-flavour/dev-ups": "1.4.0",
+    "ts-node": "10.9.2",
+    "tsconfig-paths": "4.2.0"
+  }
+}

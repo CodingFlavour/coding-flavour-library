@@ -1,5 +1,27 @@
 # Changelog
 
+## 🚀 V.1.3.0
+
+- General
+  - Added `.bashrc.example` to configure `ROUTE_TABLE_PATH` in local environments.
+  - Updated `.gitignore` to ignore `.bashrc`.
+  - Updated `@coding-flavour/dev-ups` dependency to `1.3.1-alpha.1`.
+  - Removed legacy `test/` directory used for local validations.
+- *Configure Project*
+  - Standardized internal global variables to `_DRY_MODE`, `_DEBUG`, and `_INTERACTIVE_MODE`.
+  - Added optional `.bashrc` loading and new `_set_config()` initialization to export `CODING_FLAVOUR_PROJECTS_PATH` and `ROUTE_TABLE_FILE`.
+  - Updated Coding Flavour library installs and npm scripts to run in the current project without `--prefix`.
+- *Configure Project - Flags*
+  - Added `--front-end-port`/`--frontEndPort` and `--back-end-port`/`--backEndPort` flags.
+  - Added kebab-case aliases for view flags: `--views-path` and `--views-local-boilerplate`.
+- *Configure Project - Backend*
+  - Implemented full `modify_env_vars()` flow to bootstrap `.env.example` and resolve frontend/backend ports.
+  - Added port resolution priority: flags, interactive mode, and automatic assignment.
+  - Added lookup of corresponding frontend port in `.route-table` when project name ends with `_BACKEND`.
+  - Updated `dev` script to `node --env-file=.env index.js`.
+- *Views / Front*
+  - Updated `generateViews.sh` and `create-front-project.sh` to use the new internal variable scheme.
+
 ## ✨V.1.32
 
 - General

@@ -2,88 +2,116 @@
 PROJECT_NAME=$1
 # Esto tendria que ir a un config o algo
 # STATICS
-ERROR_UPPERCASE="Error: Project name must start with a lowercase letter."
 DEFAULT_VIEWS_ROUTE=./$PROJECT_NAME/src/app
 PATH_TO_LOCALE_FILE="./template/tsx/page.tsx"
 
 # DYNAMICS
-dryMode=false
-debug=false
+_DRY_MODE=false
+_DEBUG=false
+PROJECT_TYPE=""
 FULLSCRIPTPATH="${BASH_SOURCE[0]}"
-SCRIPTPATH=$(dirname "$FULLSCRIPTPATH")
+SCRIPTPATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LOGSPATH="$PWD/logs"
 
+# load .bashrc if exists, to get user custom env vars
+if [[ -f "$SCRIPTPATH/.bashrc" ]]; then
+    source "$SCRIPTPATH/.bashrc"
+fi
+
+# import core scripts
+source $SCRIPTPATH/../dev-ups-scripts/utils/log/log.sh
+source $SCRIPTPATH/../dev-ups-scripts/config/modify-env-vars.sh
 # import helpers
-source $SCRIPTPATH/../common/helpers/log.sh
 source $SCRIPTPATH/helpers/flags.sh
+source $SCRIPTPATH/../common/helpers/npm-package.sh
+source $SCRIPTPATH/../dev-ups-scripts/utils/log/log.sh
+source $SCRIPTPATH/../i18n/i18n.sh
 # import main generators
-source $SCRIPTPATH/generateViews.sh
+source $SCRIPTPATH/front/create-front-project.sh
+source $SCRIPTPATH/back/create-back-project.sh
 source $SCRIPTPATH/coding-flavour-libraries.sh
 
 # Views related
-interactiveMode=true
+_INTERACTIVE_MODE=true
 views=''
 path=$DEFAULT_VIEWS_ROUTE
 localBoilerplate=$PATH_TO_LOCALE_FILE
+# creo que voy a cambiar como declaro estas variables, que sean un poco mas tipo global
+_FRONT_END_PORT=
+_BACK_END_PORT=
+
+_set_config() {
+    local route_path=${ROUTE_TABLE_PATH:-"$PWD"}
+
+    export CODING_FLAVOUR_PROJECTS_PATH="$PWD"
+    export ROUTE_TABLE_FILE="$route_path/.route-table"
+
+    # Reload global config variables after setting them
+    source $SCRIPTPATH/../dev-ups-scripts/config/config.sh
+    source $SCRIPTPATH/../dev-ups-scripts/utils/route-table/route-table.sh
+}
 
 validate_component_name() {
     local first_char=${PROJECT_NAME:0:1}
 
     if [[ ! "$first_char" =~ [[:lower:]] ]]; then
-        print_colored_message "$ERROR_UPPERCASE" "red"
+        log_error "$ERROR_PROJECT_NOT_UPPERCASE"
         exit 1
     fi
 }
 
-# Generates main project in NextJS
-generate_project() {
-    print_colored_message "Starting to create NextJS project" green
-    if [[ $dryMode = false ]]; then
-        npx create-next-app \
-        $PROJECT_NAME \
-        --ts \
-        --eslint \
-        --src-dir \
-        --no-tailwind \
-        --import-alias '@/*' \
-        --app \
-        --yes
+get_arch() {
+    if [[ $_INTERACTIVE_MODE = true ]]; then
+        read -p "* Do you want to create a front project? (y/n) " -n 1 -r
+        echo
+
+        if [[ $REPLY =~ ^[Nn]$ ]]; then
+            read -p "* Do you want to create a back project? (y/n) " -n 1 -r
+            echo
+
+            if [[ $REPLY =~ ^[Nn]$ ]]; then
+                log_error "No architecture selected. Exiting."
+                exit 1
+            else
+                PROJECT_TYPE="back"
+                create_back_project
+            fi
+        else
+            PROJECT_TYPE="front"
+            create_front_project
+        fi
     fi
-    print_colored_message "Ended creating NextJS project" green
 }
 
-install_dependencies() {
-    print_colored_message "Starting to install dependencies" green
-    if [[ $dryMode = false ]]; then
-        npm install --prefix ./$PROJECT_NAME/ sass
+create_logs_dir_if_not_exists() {
+    if [[ ! -d "$LOGSPATH" ]]; then
+        if ! mkdir -p "$LOGSPATH" 2>/dev/null; then
+            log_error "Failed to create logs directory at $LOGSPATH. Check permissions and available space."
+            exit 1
+        fi
     fi
-    print_colored_message "Ended installing dependencies" green
 }
-
-# @deprecated Hay que comprobara si se puede reutilizar
-# move_styles() {
-#     print_colored_message "Starting to move library files" green
-#     cp $SCRIPTPATH/styles/main.scss ./$PROJECT_NAME/src/presentation/styles/main.scss
-#     cp $SCRIPTPATH/styles/base/grid-system.scss ./$PROJECT_NAME/src/presentation/styles/base/grid-system.scss
-#     print_colored_message "Ended moving library files" green
-# }
 
 main() {
-    print_colored_message "Starting to create project" green
-    generate_project
-    install_dependencies
-    generate_views
-    # move_styles
-    install_coding_flavour_libraries
-    print_colored_message "Ended creating project" green
+    push_prefix "MAIN"
+    log "Starting to create project"
+    
+    _set_config
+    create_logs_dir_if_not_exists
+    get_arch
+    install_common_coding_flavour_libraries
+    
+    log "Ended creating project"
+    pop_prefix
 }
 
 if [[ $PROJECT_NAME = '' || $PROJECT_NAME = '-h' || $PROJECT_NAME = '--help' ]]; then
     source $SCRIPTPATH/helpers/help.sh
     show_help
-    exit 1
-else
-    validate_component_name
-    parse_flags $@
-    main
     exit 0
 fi
+
+validate_component_name
+parse_flags $@
+main
+exit 0
